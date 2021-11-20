@@ -1,0 +1,524 @@
+<?php 
+   session_start();
+   include "connect.php";
+   if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   ?>
+
+<!DOCTYPE html>
+<!-- Created by CodingLab |www.youtube.com/CodingLabYT-->
+<html lang="en">
+<style>
+	/* Google Font Link */
+	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+	/*this is side bar and body header margins*/
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: "Poppins", sans-serif;
+	}
+
+	/*this is only Side Bar Position and alignment*/
+	.sidebar {
+		position: fixed;
+		left: 0;
+		top: 70;
+		height: 100%;
+		width: 78px;
+		background: #11101D;
+		padding: 6px 14px;
+		z-index: 99;
+		transition: all 0.5s ease;
+	}
+
+	/*this is side bar scrolling */
+	.sidebar:hover {
+		overflow-y: scroll;
+	}
+
+	/*this is side bar toggle Symbol */
+	.sidebar.open {
+		width: 250px;
+	}
+
+	/*this is side bar in side of toggle list details */
+	.sidebar .logo-details {
+		height: 60px;
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+
+	/*this is side bar in side of toggle list details with icons and shows menu bar symbol*/
+	.sidebar .logo-details .icon {
+		opacity: 0;
+		transition: all 0.5s ease;
+	}
+
+	/*this is side bar in side of toggle list details with icons and shows menu bar symbol and company name*/
+	.sidebar .logo-details .logo_name {
+		color: #fff;
+		font-size: 18px;
+		font-weight: 600;
+		opacity: 0;
+		transition: all 0.5s ease;
+	}
+
+	/*Here display logo icon and company name and menu  */
+	.sidebar.open .logo-details .icon,
+	.sidebar.open .logo-details .logo_name {
+		opacity: 1;
+	}
+
+	/* Here menu action related purpose */
+	.sidebar .logo-details #btn {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		transform: translateY(-50%);
+		font-size: 22px;
+		transition: all 0.4s ease;
+		font-size: 23px;
+		text-align: center;
+		cursor: pointer;
+		transition: all 0.5s ease;
+	}
+
+	/* Here list of assets texture purpose */
+	.sidebar i {
+		color: #fff;
+		height: 60px;
+		min-width: 50px;
+		font-size: 28px;
+		text-align: center;
+		line-height: 60px;
+	}
+
+	/* Here  spacing for each assets  */
+	.sidebar li {
+		position: relative;
+		margin: 8px 0;
+		list-style: none;
+	}
+
+	/* Here  list of assets and icon shows in side bar , else it's reflected out side of sidebar .  */
+	.sidebar li .tooltip {
+		position: absolute;
+		top: -20px;
+		left: calc(100% + 15px);
+		z-index: 3;
+		background: #fff;
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+		padding: 6px 12px;
+		border-radius: 4px;
+		font-size: 15px;
+		font-weight: 400;
+		opacity: 0;
+		white-space: nowrap;
+		pointer-events: none;
+		transition: 0s;
+	}
+
+	/* Here  list of assets buttons backgroung color purpose  .  */
+	.sidebar li a {
+		display: flex;
+		height: 100%;
+		width: 100%;
+		border-radius: 12px;
+		align-items: center;
+		text-decoration: none;
+		transition: all 0.4s ease;
+		background: #11101D;
+	}
+
+	/* selected asset background color purpose  .  */
+	.sidebar li a:hover {
+		background: #FFF;
+	}
+
+	/* Here  list of assets are link  and icon shows in side bar , else it's reflected out side of sidebar .  */
+	.sidebar li a .links_name {
+		color: #fff;
+		font-size: 13px;
+		font-weight: 400;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: 0.4s;
+	}
+
+	/* Here  list of assets names visualization purpose.  */
+	.sidebar.open li a .links_name {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* Here  list of assets names bg color on selected time purpose.  */
+	.sidebar li a:hover .links_name,
+	.sidebar li a:hover i {
+		transition: all 0.5s ease;
+		color: #11101D;
+	}
+
+	/* Here  list of assets icons size purpose.  */
+	.sidebar li i {
+		height: 50px;
+		line-height: 50px;
+		font-size: 18px;
+		border-radius: 12px;
+	}
+
+	/* Here  body details related purpose.  */
+	.home-section {
+		position: absolute;
+		background: #E4E9F7;
+		min-height: 100vh;
+		top: 70;
+		left: 80px;
+		width: 1352px;
+		/*width: 100%;*/
+		transition: all 0.5s ease;
+		z-index: 2;
+	}
+
+	.sidebar.open~.home-section {
+		left: 250px;
+		width: calc(100% - 250px);
+	}
+
+	.home-section .text {
+		display: inline-block;
+		color: #11101d;
+		font-size: 25px;
+		font-weight: 500;
+		margin: 18px
+	}
+
+	@media (max-width: 420px) {
+		.sidebar li .tooltip {
+			display: none;
+		}
+	}
+
+	table {
+		border: 2px solid rgb(0, 0, 0);
+		border-collapse: collapse;
+		width: 1345px;
+	}
+
+	table tr {
+		border: 2px solid rgb(0, 0, 0);
+	}
+
+	table td {
+		border: 2px solid rgb(0, 0, 0);
+		padding: 8px;
+	}
+
+
+	main {
+		width: 75%;
+		margin: 50px auto;
+		border: 0px solid grey;
+		display: grid;
+		grid-template-rows: 60px 100px 200px 60px;
+		grid-template-columns: repeat(4, 100px) 100px;
+		grid-gap: 40px;
+	}
+
+	.div1 {
+		grid-column: 1/-2;
+		width: 400px;
+		height: 180px;
+		grid-gap: 40px;
+		font-size: 32px;
+
+	}
+
+	.div2 {
+		grid-column: 1/ span;
+		width: 400px;
+		font-size: 32px;
+		height: 180px;
+		text-align: center;
+	}
+
+	.div3 {
+		grid-column: 1/-2;
+		width: 400px;
+		height: 180px;
+		font-size: 32px;
+		margin-top: 120px;
+	}
+
+	.div4 {
+		width: 400px;
+		height: 180px;
+		font-size: 32px;
+		margin-top: 120px;
+
+	}
+</style>
+
+<head>
+
+	<title>Welcome to RJEYS | Home </title>
+	<!-- Boxicons CDN Link -->
+	<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+<body>
+	<div class="sidebar">
+		<div class="logo-details">
+			<i class='bx bxs-chalkboard icon'></i>
+			<div class="logo_name" style="padding-left: 6px;">RJEYS Infinity Solutions</div>
+			<i class='bx bx-menu' id="btn"></i>
+		</div>
+		<ul class="nav-list" id="list_assets" style="padding-left: 0px;">
+			<li>
+				<a href="#">
+					<i class='bx bx-grid-alt'></i>
+					<span class="links_name">Home</span>
+				</a>
+				<span class="tooltip">Home</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-grid-alt'></i>
+					<span class="links_name">Summary</span>
+				</a>
+				<span class="tooltip">Summary</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-user'></i>
+					<span class="links_name">MDA Objects</span>
+				</a>
+				<span class="tooltip">MDA Objects</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-chat'></i>
+					<span class="links_name">Reports</span>
+				</a>
+				<span class="tooltip">Reports</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-pie-chart-alt-2'></i>
+					<span class="links_name">Rules</span>
+				</a>
+				<span class="tooltip">Rules</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-folder'></i>
+					<span class="links_name">Ingest Jobs</span>
+				</a>
+				<span class="tooltip">Ingest Jobs</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-cart-alt'></i>
+					<span class="links_name">Scorecards 2.0</span>
+				</a>
+				<span class="tooltip">Scorecards 2.0</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-heart'></i>
+					<span class="links_name">Journey Orchestrator</span>
+				</a>
+				<span class="tooltip">Journey Orchestrator</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-cog'></i>
+					<span class="links_name">Data Designer</span>
+				</a>
+				<span class="tooltip">Data Designer</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-book-open'></i>
+					<span class="links_name">Playbooks</span>
+				</a>
+				<span class="tooltip">Playbooks</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-factory'></i>
+					<span class="links_name">Milestones</span>
+				</a>
+				<span class="tooltip">Milestones</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxl-kubernetes'></i>
+					<span class="links_name">Success Plans Templates</span>
+				</a>
+				<span class="tooltip">Success Plans Templates</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-terminal'></i>
+					<span class="links_name">Survey</span>
+				</a>
+				<span class="tooltip">Survey</span>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-repost'></i>
+					<span class="links_name">Schedules</span>
+				</a>
+				<span class="tooltip">Schedules</span>
+			</li>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bx-mail-send'></i>
+					<span class="links_name">Email Templates</span>
+				</a>
+				<span class="tooltip">Email Templates</span>
+			</li>
+		</ul>
+	</div>
+	<section class="home-section">
+		<h1 style="padding-left: 20px;padding-top: 20px;">Welcome to RJEYS Infinity Solutions</h1>
+		<main>
+			<a class="btn btn-primary div2" href="training_portal/training_page.php"
+				style="margin-bottom: 20px;padding-top: 70px; font-size:30px; background-color:cadetblue">Training</a>
+			<a class="btn btn-primary div2" href="/loginpage/issue_tracker/display.php"
+				style="margin-left:50px; margin-bottom:20px; padding-top: 70px; font-size:30px; background-color: rgb(189, 107, 182);">Issue
+				Tarcker</a>
+			<a class="btn btn-primary div2" href="pre-upgrade/pre-upgrade_page.php"
+				style="padding-top: 70px; font-size:30px; background-color: rgb(23, 204, 195);">Pre-Upgrade</a>
+			<a class="btn btn-primary div2" href="nxt-upgrade/nxt-upgrade_page.php"
+				style="margin-left:50px;padding-top: 70px; font-size:30px; background-color: red;">NXT-Upgrade</a>
+		</main>
+	</section>
+
+
+</body>
+
+<script>
+	//debugger;
+	let mylist = document.getElementById("list_assets");
+	let mylistdata = mylist.outerText;
+	console.log('test.....' + mylistdata);
+	let str1 = mylistdata.slice(0, 4);
+	let str2 = mylistdata.slice(10, 17);
+	let str3 = mylistdata.slice(26, 37);
+	let str4 = mylistdata.slice(50, 57);
+	let str5 = mylistdata.slice(66, 71);
+	let str6 = mylistdata.slice(78, 89);
+	let str7 = mylistdata.slice(102, 116);
+	let str8 = mylistdata.slice(132, 152);
+	let str9 = mylistdata.slice(174, 187);
+	let str10 = mylistdata.slice(202, 211);
+	let str11 = mylistdata.slice(222, 232);
+	let str12 = mylistdata.slice(244, 267);
+	let str13 = mylistdata.slice(292, 298);
+	let str14 = mylistdata.slice(306, 315);
+	let str15 = mylistdata.slice(326, 341);
+
+
+	console.log('test1 .....' + str1);
+	console.log('test2 .....' + str2);
+	console.log('test3 .....' + str3);
+	console.log('test4 .....' + str4);
+	console.log('test5 .....' + str5);
+	console.log('test6 .....' + str6);
+	console.log('test7 .....' + str7);
+	console.log('test8 .....' + str8);
+	console.log('test9 .....' + str9);
+	console.log('test10 .....' + str10);
+	console.log('test11.....' + str11);
+	console.log('test12.....' + str12);
+	console.log('test13 .....' + str13);
+	console.log('test14 .....' + str14);
+	console.log('test15 .....' + str15);
+
+	let mylist_assets = [str1, str2, str3, str4, str5, str6, str7, str8, str9, str10, str11, str12, str13, str14, str15];
+	console.log('My Assets Data::: ', mylist_assets);
+
+	/*function getFile(filePath) {
+		return filePath.substr(filePath.lastIndexOf('\\') + 1).split('.')[0];
+	}
+
+	function getfilename() {
+		optname.value = getFile(fileUpload.value);
+		console.log('file name ..... ' + optname.value);
+		console.log('file name ..... ' + mylist_assets.includes(optname.value));
+		/// let lst = ["DataManagement", "Cockpit", "RulesEngine", "JO", "C360", "Connectors"];
+		if (mylist_assets.includes(optname.value)) {
+			Upload();
+		} else {
+			console.log('Failed.....');
+		}
+	}*/
+
+	function Upload() {
+		var fileUpload = document.getElementById("fileUpload");
+		var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt |.xlsx)$/;
+		if (regex.test(fileUpload.value.toLowerCase())) {
+			if (typeof (FileReader) != "undefined") {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					var table = document.createElement("table");
+					var rows = e.target.result.split("\n");
+					for (var i = 0; i < rows.length; i++) {
+						var cells = rows[i].split(",");
+						if (cells.length > 1) {
+							var row = table.insertRow(-1);
+							for (var j = 0; j < cells.length; j++) {
+								var cell = row.insertCell(-1);
+								cell.innerHTML = cells[j];
+							}
+						}
+					}
+					var dvCSV = document.getElementById("dvCSV");
+					dvCSV.innerHTML = "";
+					dvCSV.appendChild(table);
+				}
+				reader.readAsText(fileUpload.files[0]);
+			} else {
+				alert("This browser does not support HTML5.");
+			}
+		} else {
+			alert("Please upload a valid CSV file.");
+		}
+	}
+
+
+
+	let sidebar = document.querySelector(".sidebar");
+	let closeBtn = document.querySelector("#btn");
+
+	closeBtn.addEventListener("click", () => {
+		sidebar.classList.toggle("open");
+		menuBtnChange();//calling the function(optional)
+	});
+	// following the code to change sidebar button and show the assest values
+	function menuBtnChange() {
+		if (sidebar.classList.contains("open")) {
+			closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+		} else {
+			closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");//replacing the iocns class
+		}
+	}
+
+</script>
+
+</html>
+<?php }else{
+	header("Location: login_page.php");
+} ?>
